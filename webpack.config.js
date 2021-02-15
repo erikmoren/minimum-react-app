@@ -1,31 +1,35 @@
-const HtmlWebPackPlugin = require('html-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-
-const htmlPlugin = new HtmlWebPackPlugin({
-  template: './src/index.html',
-  filename: './index.html',
-});
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './dist',
+  },
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-        },
+        loader: 'babel-loader',
       },
     ],
   },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new UglifyJsPlugin(),
-    ],
-    usedExports: true,
-    sideEffects: true,
-  },
-  plugins: [htmlPlugin],
+  plugins: [
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      templateContent: `
+        <html>
+          <body>
+            <div id="root"></div>
+          </body>
+        </html>
+      `
+    })
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },  
 };
