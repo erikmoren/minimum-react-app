@@ -1,22 +1,12 @@
-import React from 'react'
-
-let dialogPolyfill = null
+import React from 'react';
+import dialogPolyfill from 'dialog-polyfill'
 
 if (window.HTMLDialogElement === undefined) {
-  import('dialog-polyfill/dialog-polyfill.css')
+  import('dialog-polyfill/dialog-polyfill.css');
 }
 
 export function useDialogPolyfill(ref) {
   React.useLayoutEffect(() => {
-    if (window.HTMLDialogElement === undefined) {
-      if (dialogPolyfill) {
-        dialogPolyfill.registerDialog(ref.current)
-      } else {
-        import('dialog-polyfill').then((polyfill) => {
-          polyfill.default.registerDialog(ref.current)
-          dialogPolyfill = polyfill.default
-        })
-      }
-    }
+      dialogPolyfill.registerDialog(ref.current)
   }, [ref])
 }
